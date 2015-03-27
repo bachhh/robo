@@ -1,3 +1,7 @@
+This is a pratice set for the robotics programming course. 
+
+Set of API functions in picomms.c
+
 The simulator has been developed using python 2.7.  It should probably
 run with any python 2.x version, but will probably not run on python
 3.x.  It might be possible to make it run on python 3.x, but this
