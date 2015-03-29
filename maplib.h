@@ -1,4 +1,3 @@
-
 struct node{
     int name;
     double x, y;
@@ -9,7 +8,6 @@ struct node{
     struct node* parent;
     int discovered;
 };
-
 
 void initialize_maze();
 int available_adjacent(struct node* node);

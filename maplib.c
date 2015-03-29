@@ -8,7 +8,6 @@
 #include "picomms.h"       // Compile with -lm flag.
 #include "movelib.h"
 #include "maplib.h"
-
 extern double face_angle;
 
 /*
@@ -142,8 +141,6 @@ int node_on_right(double angle, struct node* currentnode){
     else return 17;
 }
 
-
-
 void move_to_node(double curr_coord[2], struct node* node){
     printf("Moving to node: %d \n",node->name );
     printf("Moving to coord: x %f y %f \n",node->x, node->y );
@@ -217,30 +214,11 @@ int main(){
     reset_motor_encoders();
     int i;
     for (i = 0; i < 17; i++){
-        //printf("Node %d 's X = %f, Y = %f \n", nodes[i]->name, nodes[i]->x, nodes[i]->y);
 
         set_point(nodes[i]->x, nodes[i]->y);
         sleep(0.1);
     }
     double curr_coord[2] = {0, 0};
-    map(curr_coord, nodes[0]);
-    
-
-
-    spin(curr_coord, to_rad(180));
-    set_origin();
-    
-    for (i = 0; i < 17; i++){
-        free(nodes[i]);
-    }
-    initialize_maze();
-    reset_motor_encoders();
-    for (i = 0; i < 17; i++){
-        //printf("Node %d 's X = %f, Y = %f \n", nodes[i]->name, nodes[i]->x, nodes[i]->y);
-
-        set_point(nodes[i]->x, nodes[i]->y);
-        sleep(0.1);
-    }
     map(curr_coord, nodes[0]);
     return 0;
 }
