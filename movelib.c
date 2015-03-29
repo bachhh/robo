@@ -12,16 +12,11 @@
 #define R_WHEEL 4.7548
 // cm, vary on individual robot     
 double width = 22.5;
-// Angle in Radians 
-double face_angle = 0;
 
 int prevenc[2] = {0, 0};
-int prevspinenc[2] ={0, 0};
 
-/*
-    Some trivial maths functions.
+// Trivial maths functions.
 
-*/
 double to_rad(double degree) {
     return degree * (M_PI/180);
 }

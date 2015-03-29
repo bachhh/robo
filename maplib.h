@@ -1,3 +1,4 @@
+
 struct node{
     int name;
     double x, y;

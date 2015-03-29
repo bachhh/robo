@@ -8,7 +8,7 @@
 #include "picomms.h"       // Compile with -lm flag.
 #include "movelib.h"
 #include "maplib.h"
-extern double face_angle;
+#include "queue.h"
 
 /*
 ###             Mapping Standard            ###

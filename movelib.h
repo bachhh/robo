@@ -1,5 +1,7 @@
 #define R_WHEEL 4.7548
 
+extern double face_angle = 0;
+
 // function prototypes for movelib.c
 
 double to_rad(double degree);
