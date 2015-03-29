@@ -93,7 +93,7 @@ void spin(double curr_coord[2], double angle){
         return;
     printf("Start Spinning: from %f, with :%f\n",to_degree(face_angle), to_degree(angle));
     double initial_angle = face_angle;
-    int speed = 15;
+    int speed = 10;
     int tempspeed = 0;
     double angle_turned = 0; 
     double abs_angle = fabs(angle);
@@ -120,7 +120,7 @@ void spin(double curr_coord[2], double angle){
         angle_turned = fabs(face_angle - initial_angle);
         prevenc[0] = tempenc[0];
         prevenc[1] = tempenc[1];
-        printf("Monitoring: angle: %f  X: %f , Y: %f \n", to_degree(face_angle), curr_coord[0], curr_coord[1] );
+       //printf("Monitoring: angle: %f  X: %f , Y: %f \n", to_degree(face_angle), curr_coord[0], curr_coord[1] );
 
     }
     position_tracker(curr_coord);
@@ -130,7 +130,7 @@ void spin(double curr_coord[2], double angle){
 
 
 void go_straight(double curr_coord[2], double distance){
-    int speed = 60;
+    int speed = 30;
     int tempspeed = 0;
     double distance_traveled = 0;
 
@@ -145,7 +145,7 @@ void go_straight(double curr_coord[2], double distance){
 
         distance_traveled +=position_tracker(curr_coord);
         set_point(curr_coord[0], curr_coord[1]);
-        printf("Monitoring: angle: %f  X: %f , Y: %f \n", to_degree(face_angle), curr_coord[0], curr_coord[1] );
+        //printf("Monitoring: angle: %f  X: %f , Y: %f \n", to_degree(face_angle), curr_coord[0], curr_coord[1] );
     }
     position_tracker(curr_coord);
     set_motors(0, 0);
@@ -175,9 +175,9 @@ int no_wall_left(){
     double wall = 0;
     for (i = 0; i < 10; i++)
     {
-        wall += get_side_ir_dist(LEFT);
+        wall += get_front_ir_dist(LEFT);
     }
-    return (wall/10 < 40) ? 0 : 1;
+    return (wall/10 < 35) ? 0 : 1;
 }
 
 int no_wall_right(){
@@ -185,9 +185,9 @@ int no_wall_right(){
     double wall = 0;
     for ( i = 0; i < 10; i++)
     {
-        wall += get_side_ir_dist(RIGHT);
+        wall += get_front_ir_dist(RIGHT);
     }
-    return (wall/10 < 40) ? 0 : 1;
+    return (wall/10 < 35) ? 0 : 1;
 }
 
 int no_wall_front(){

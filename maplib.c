@@ -4,7 +4,6 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include "picomms.h"
 #include <math.h> 
 #include "picomms.h"       // Compile with -lm flag.
 #include "movelib.h"
@@ -55,6 +54,8 @@ struct node{
     int visited;
     int start;
     int final;
+    struct node* parent;
+    int discovered;
 };
 
 struct node* nodes[17];
@@ -68,6 +69,7 @@ void initialize_maze(){
         nodes[i]->visited = 0;
         nodes[i]->start = 0;
         nodes[i]->final = 0;
+        nodes[i]->discovered = 0;
         memset(nodes[i]->adjacent, 0, sizeof(nodes[i]->adjacent));
         if (i != 0){
            nodes[i]->x = ((i - 1) % 4) * 60;
@@ -172,7 +174,7 @@ void move_to_node(double curr_coord[2], struct node* node){
             j = available_adjacent(nodes[currentfront]);
             nodes[currentfront]->adjacent[j] = currentnode;
         }
-        printf("There is no wall front \n");
+        printf("There is no wall front , US dist:  %d \n", get_us_dist());
     }
     if (no_wall_left() == 1){
         if (nodes[currentleft]->visited == 0){
@@ -181,7 +183,7 @@ void move_to_node(double curr_coord[2], struct node* node){
             j = available_adjacent(nodes[currentleft]);
             nodes[currentleft]->adjacent[j] = currentnode;  
         }
-        printf("There is NO wall left !\n");
+        printf("There is NO wall left ! LEFT IR : %d\n", get_side_ir_dist(LEFT));
     }
     if (no_wall_right() == 1){
         if (nodes[currentright]->visited == 0){
@@ -190,7 +192,7 @@ void move_to_node(double curr_coord[2], struct node* node){
             j = available_adjacent(nodes[currentright]);
             nodes[currentright]->adjacent[j] = currentnode;        
         }
-        printf("There is NO wall right\n");
+        printf("There is NO wall right ! RIGHT IR : %d \n", get_side_ir_dist(RIGHT));
     }
     printf("Checking ALL for node[%d] wall done!\n", node->name);
 
@@ -218,8 +220,9 @@ int main(){
 
     connect_to_robot();
     initialize_robot();
-    centering();
     set_origin();
+    set_ir_angle(LEFT, -45);
+    set_ir_angle(RIGHT, 45);
     initialize_maze();
     reset_motor_encoders();
     int i;
@@ -230,6 +233,24 @@ int main(){
         sleep(0.1);
     }
     double curr_coord[2] = {0, 0};
+    map(curr_coord, nodes[0]);
+    
+
+
+    spin(curr_coord, to_rad(180));
+    set_origin();
+    
+    for (i = 0; i < 17; i++){
+        free(nodes[i]);
+    }
+    initialize_maze();
+    reset_motor_encoders();
+    for (i = 0; i < 17; i++){
+        //printf("Node %d 's X = %f, Y = %f \n", nodes[i]->name, nodes[i]->x, nodes[i]->y);
+
+        set_point(nodes[i]->x, nodes[i]->y);
+        sleep(0.1);
+    }
     map(curr_coord, nodes[0]);
     return 0;
 }
