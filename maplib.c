@@ -7,6 +7,7 @@
 #include <math.h> 
 #include "picomms.h"       // Compile with -lm flag.
 #include "movelib.h"
+#include "maplib.h"
 
 extern double face_angle;
 
@@ -46,17 +47,6 @@ ____________
 
 */
 
-
-struct node{
-    int name;
-    double x, y;
-    struct node* adjacent[4];
-    int visited;
-    int start;
-    int final;
-    struct node* parent;
-    int discovered;
-};
 
 struct node* nodes[17];
 
