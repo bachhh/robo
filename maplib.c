@@ -56,8 +56,6 @@ void initialize_maze(){
         nodes[i] = malloc(sizeof(struct node));
         nodes[i]->name = i;
         nodes[i]->visited = 0;
-        nodes[i]->start = 0;
-        nodes[i]->final = 0;
         nodes[i]->discovered = 0;
         memset(nodes[i]->adjacent, 0, sizeof(nodes[i]->adjacent));
         if (i != 0){
@@ -65,8 +63,6 @@ void initialize_maze(){
            nodes[i]->y = ( (int) ( (i - 1) / 4) + 1) * 60;
         }
     }
-    nodes[0]->start = 1;
-    nodes[16]->final = 1;
 }
 
 
@@ -201,7 +197,6 @@ void map(double curr_coord[2], struct node* currentnode){
     }
 
 }
-
 
 int main(){
 
