@@ -4,8 +4,6 @@ struct node{
     double x, y;
     struct node* adjacent[4];
     int visited;
-    int start;
-    int final;
     struct node* parent;
     int discovered;
 };

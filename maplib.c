@@ -217,6 +217,16 @@ void breadthFirstSearch(struct node* startnode){
     }
 }
 
+void printPath(struct node* node){
+    if (node->name == 0){
+        printf(" %d ] END ! \n", node->name);
+    }
+    else{
+        printf("%d ->", node->name);
+        printPath(node->parent);
+    }
+}
+
 int main(){
 
     connect_to_robot();
@@ -234,5 +244,7 @@ int main(){
     }
     double curr_coord[2] = {0, 0};
     map(curr_coord, nodes[0]);
+    breadthFirstSearch(nodes[0]);
+
     return 0;
 }
