@@ -1,13 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "queue.h"
 
-void QueueIsEmpty(struct queue* queue){
+int QueueIsEmpty(struct queue* queue){
     return (queue->count == 0) ? 1 : 0;
 }
 
-void QueueIsFull(struct queue* queue){
+int QueueIsFull(struct queue* queue){
     return (queue->count == MAX_QUEUE_SIZE) ? 1 : 0;
-} Q
+}
 
 void Enqueue(struct queue* queue, queueElementType element){
     if ( QueueIsFull(queue) == 0){
@@ -22,13 +23,13 @@ void Enqueue(struct queue* queue, queueElementType element){
 queueElementType Dequeue(struct queue* queue){
     if (QueueIsEmpty(queue) == 0){
         queue->count--;
-        queueElementType temp = queue->array[head];
-        queue->head = (queue->head >= MAX_QUEUE_SIZE - 1) ? 0 : -> queue->head + 1;
+        queueElementType temp = queue->array[queue->head];
+        queue->head = (queue->head >= MAX_QUEUE_SIZE - 1) ? 0 : queue->head + 1;
         return temp;
-
     }
     else 
         printf("Error ! Queue is Empty \n");
+        exit(EXIT_FAILURE);
 }
 
 struct queue* makeQueue(){

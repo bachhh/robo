@@ -1,6 +1,6 @@
 #include "maplib.h"
 
-#define MAX_QUEUE_SIZE 100
+#define MAX_QUEUE_SIZE 20
 
 typedef struct node* queueElementType;
 
@@ -11,7 +11,8 @@ struct queue {
     int count;
 };
 
-void QueueIsEmpty(struct queue* queue);
-void QueueIsFull(struct queue* queue);
+int QueueIsEmpty(struct queue* queue);
+int QueueIsFull(struct queue* queue);
 void Enqueue(struct queue* queue, queueElementType element);
 queueElementType Dequeue(struct queue* queue);
+struct queue* makeQueue();
