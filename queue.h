@@ -14,4 +14,4 @@ struct queue {
 void QueueIsEmpty(struct queue* queue);
 void QueueIsFull(struct queue* queue);
 void Enqueue(struct queue* queue, queueElementType element);
-queueElementType Dequeue(struct queue* queue, queueElementype element);
+queueElementType Dequeue(struct queue* queue);
