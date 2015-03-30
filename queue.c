@@ -19,7 +19,7 @@ void Enqueue(struct queue* queue, queueElementType element){
         printf("Error ! Queue is Full \n");
 }
 
-queueElementType Dequeue(struct queue* queue, queueElementype element){
+queueElementType Dequeue(struct queue* queue, queueElementType element){
     if (QueueIsEmpty(queue) != 0){
         queue->count--;
         queueElementType temp = queue->array[head];

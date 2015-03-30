@@ -198,6 +198,25 @@ void map(double curr_coord[2], struct node* currentnode){
 
 }
 
+void breadthFirstSearch(struct node* startnode){
+    struct queue* queue = malloc(sizeof(struct queue));
+    Enqueue(queue, startnode);
+    startnode->discovered = 1;
+    while (QueueIsEmpty(queue) != 1){
+        struct node* tempnode = Dequeue(queue);
+        int i;
+        if (tempnode->name == 16)
+            break;
+        for (i = 0; i < 4; i++){
+            if (tempnode->adjacent[i] != 0 && tempnode->adjacent[i]->discovered != 1){
+                Enqueue(queue, tempnode->adjacent[i]);
+                tempnode->adjacent[i]->parent = tempnode;
+                tempnode->adjacent[i]->discovered = 1;
+            }
+        }
+    }
+}
+
 int main(){
 
     connect_to_robot();
