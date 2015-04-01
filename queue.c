@@ -16,8 +16,10 @@ void Enqueue(struct queue* queue, queueElementType element){
         queue->count++;
         queue->tail = (queue->tail >= MAX_QUEUE_SIZE - 1) ? 0 : queue->tail + 1;
     }
-    else
+    else{
         printf("Error ! Queue is Full \n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 queueElementType Dequeue(struct queue* queue){
@@ -27,9 +29,10 @@ queueElementType Dequeue(struct queue* queue){
         queue->head = (queue->head >= MAX_QUEUE_SIZE - 1) ? 0 : queue->head + 1;
         return temp;
     }
-    else 
+    else {
         printf("Error ! Queue is Empty \n");
         exit(EXIT_FAILURE);
+    }
 }
 
 struct queue* makeQueue(){
