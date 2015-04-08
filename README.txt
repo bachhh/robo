@@ -24,8 +24,6 @@ On MacOS, if you've installed the 32-bit version of pygame, you may need to run 
 python-2.7-32 RoboSim
 or edit the first line of RoboSim to specify this version of python.
 
-If you had permission denied then try chmod u+x for RoboSim
-
 One the simulator is running, you can drive manually using the buttons
 at the top of the window.  
 
