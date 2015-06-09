@@ -19,5 +19,7 @@ int main(){
     get_motor_encoders(&leftenc, &rightenc);
     printf("Encoder: %d, %d \n", leftenc, rightenc );
     printf("Distance = %f, %f \n", enc_to_dist(leftenc), enc_to_dist(rightenc));
+
+    printf("Coord: X = %f, Y = %f \n", curr_coord[0], curr_coord[1]);
     return 0;
 }
