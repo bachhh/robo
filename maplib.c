@@ -249,13 +249,13 @@ void mazeRace(double curr_coord[2], struct node* node){
 }
 
 struct point* connect_node(struct point* tail,struct node* from, struct node* to){
-    int spacing = 5;           // Connect by using 'spacing'-number of points
+    int degree_of_spacing = 5;           // Connect by using degree-number of points
     int sumx = to->x - from->x;
     int sumy = to->y - from->y;
-    int marginx = sumx/spacing;
-    int marginy = sumy/spacing;
+    int marginx = sumx/degree_of_spacing;
+    int marginy = sumy/degree_of_spacing;
     int i;
-    for (i = 1; i <= spacing; i++){        
+    for (i = 1; i <= degree_of_spacing; i++){        
         struct point* newpoint = malloc(sizeof(struct point));
         newpoint->x = from->x + marginx * i;
         newpoint->y = from->y + marginy * i;
@@ -274,18 +274,31 @@ void build_path(struct point* tail, struct node* startnode){
     tail->next = NULL; 
 }
 
-void maze_race(double curr_coord[2], struct point* start){
-    while (start->next){
-        double distance = race_to(curr_coord, start->next->x, start->next->y);
-        if (distance < 7) start = start->next; // If we are too close aim for the next node
-    }
+void maze_race(double curr_coord[2], struct point* startpoint){
+    double dx = startpoint->next->x - startpoint->x;
+    double dy = startpoint->next->y - startpoint->y;
+    double distance = fabs(sqrt(dx*dx + dy*dy));
 
+    while (startpoint->next->next != NULL){
+        if (distance < 27){
+            startpoint = startpoint->next; // If we are too close aim for the next node
+            printf("Switched point!!! \n ");
+        } 
+        distance = race_to(curr_coord, startpoint->next->x, startpoint->next->y);
+    }
+    while (distance >= 2){
+        printf("Approaching Final! \n");
+        distance = race_to(curr_coord, startpoint->x, startpoint->y);
+    }
+    set_motors(0,0);
 }
 
 int main(){
 
     connect_to_robot();
     initialize_robot();
+    set_motors(-20, -20);
+    sleep(1.5);
     set_origin();
     set_ir_angle(LEFT, -45);
     set_ir_angle(RIGHT, 45);
@@ -293,25 +306,33 @@ int main(){
     reset_motor_encoders();
     int i;
     for (i = 0; i < 17; i++){
-
         set_point(nodes[i]->x, nodes[i]->y);
-        sleep(0.1);
     }
     double curr_coord[2] = {0, 0};
     map(curr_coord, nodes[0]);
     breadthFirstSearch(nodes[0]);
     reversePath(nodes[16]);
     printPath(nodes[0]);
+
     struct point* tail = malloc(sizeof(struct point));
     tail->x = nodes[0]->x;
     tail->y = nodes[0]->y;
-    struct point* start = tail;
+    struct point* startpoint = tail;
+
     build_path(tail, nodes[0]);
+    
+    // Traverse to end node.
     while(tail->next){
-        set_point(tail->x, tail->y);
+        set_point(tail->x, tail->y); // Visual display for Simulator only.
         tail = tail->next;
     }
+    tail->next = NULL; // Final node point to null.
+    printf("tail: X = %f Y = %f \n", tail->x, tail->y);
     spin(curr_coord, to_rad(180));
-    maze_race(curr_coord, start);
+    sleep(2);
+    set_ir_angle(LEFT, 45);
+    set_ir_angle(RIGHT, -45);
+
+    maze_race(curr_coord, startpoint);
     return 0;
 }

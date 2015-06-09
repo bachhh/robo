@@ -133,7 +133,7 @@ void go_straight(double curr_coord[2], double distance){
     double distance_traveled = 0;
 
     while (distance_traveled < distance){
-        if (distance_traveled > 0.96*distance){
+        if (distance_traveled > 0.93*distance){
             tempspeed = (tempspeed < 2) ? 1 : speed * (1 - distance_traveled/distance);
         }
         else {
@@ -165,31 +165,31 @@ void move_to(double curr_coord[2], double x, double y){
 
 
 double race_to(double curr_coord[2], double x, double y){
-    int steering = 1.5; // Ratio between the speed of each wheels.
-    double error_margin_angle = 0.7;    // Degrees
-    double error_margin_distance = 2;   // Centimeters
-    double speed = 30;
+    double steering = 1.8;                 // Ratio between the speed of each wheels.
+    double error_margin_angle = 3;      // Degrees
+    double speed = 70;
     double dx = x - curr_coord[0];
     double dy = y - curr_coord[1];
     
     double targetA = atan2(dx, dy);
     double dangle = targetA - face_angle;
     dangle += (dangle > to_rad(180)) ? -to_rad(360) : (dangle < -to_rad(180)) ? to_rad(360) : 0;
-    
-    if(fabs(sqrt(dx*dx + dy*dy)) > error_margin_distance){
-        // If we need to turn, perform steering maneuver
-        if(face_angle - targetA >= to_rad(error_margin_angle)){
-            if (dangle > 0){
-                set_motors(speed*steering, speed);
-            }
-            else{
-                set_motors(speed, speed*steering);
-            }
+
+    double distance = fabs(sqrt(dx*dx + dy*dy));
+    // If we need to turn, perform steering maneuver
+    if(fabs(dangle) >= to_rad(error_margin_angle)){
+        if (to_degree(dangle) > 0){
+            set_motors( speed*steering, speed/steering);
         }
-        // Otherwise just go straight;
+        else {
+            set_motors(speed/steering, speed*steering);
+        }
+        printf("Steering: %f \n", to_degree(dangle));
+    }
+    else { // Otherwise just go straight;
         set_motors(speed, speed);
     }
-    double distance = position_tracker(curr_coord);
+    position_tracker(curr_coord);
     return distance;
 }
 
