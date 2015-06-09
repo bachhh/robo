@@ -8,6 +8,11 @@ struct node{
     int discovered;
 };
 
+struct point{
+	double x, y;
+	struct point* next;
+};
+
 void initialize_maze();
 int available_adjacent(struct node* node);
 int node_in_front(double angle, struct node* currentnode);

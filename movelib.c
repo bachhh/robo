@@ -164,6 +164,35 @@ void move_to(double curr_coord[2], double x, double y){
 }
 
 
+double race_to(double curr_coord[2], double x, double y){
+    int steering = 1.5; // Ratio between the speed of each wheels.
+    double error_margin_angle = 0.7;    // Degrees
+    double error_margin_distance = 2;   // Centimeters
+    double speed = 30;
+    double dx = x - curr_coord[0];
+    double dy = y - curr_coord[1];
+    
+    double targetA = atan2(dx, dy);
+    double dangle = targetA - face_angle;
+    dangle += (dangle > to_rad(180)) ? -to_rad(360) : (dangle < -to_rad(180)) ? to_rad(360) : 0;
+    
+    if(fabs(sqrt(dx*dx + dy*dy)) > error_margin_distance){
+        // If we need to turn, perform steering maneuver
+        if(face_angle - targetA >= to_rad(error_margin_angle)){
+            if (dangle > 0){
+                set_motors(speed*steering, speed);
+            }
+            else{
+                set_motors(speed, speed*steering);
+            }
+        }
+        // Otherwise just go straight;
+        set_motors(speed, speed);
+    }
+    double distance = position_tracker(curr_coord);
+    return distance;
+}
+
 
 // Taking average of multiple readings is more reliable
 

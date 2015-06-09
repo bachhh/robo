@@ -248,6 +248,40 @@ void mazeRace(double curr_coord[2], struct node* node){
     }
 }
 
+struct point* connect_node(struct point* tail,struct node* from, struct node* to){
+    int spacing = 5;           // Connect by using 'spacing'-number of points
+    int sumx = to->x - from->x;
+    int sumy = to->y - from->y;
+    int marginx = sumx/spacing;
+    int marginy = sumy/spacing;
+    int i;
+    for (i = 1; i <= spacing; i++){        
+        struct point* newpoint = malloc(sizeof(struct point));
+        newpoint->x = from->x + marginx * i;
+        newpoint->y = from->y + marginy * i;
+        tail->next = newpoint;
+        tail = newpoint;
+    }
+    return tail;
+}   
+
+void build_path(struct point* tail, struct node* startnode){
+    while(startnode->child){
+        struct point* temp = connect_node(tail, startnode, startnode->child);
+        startnode = startnode->child;
+        tail = temp;
+    }
+    tail->next = NULL; 
+}
+
+void maze_race(double curr_coord[2], struct point* start){
+    while (start->next){
+        double distance = race_to(curr_coord, start->next->x, start->next->y);
+        if (distance < 7) start = start->next; // If we are too close aim for the next node
+    }
+
+}
+
 int main(){
 
     connect_to_robot();
@@ -268,6 +302,16 @@ int main(){
     breadthFirstSearch(nodes[0]);
     reversePath(nodes[16]);
     printPath(nodes[0]);
-    mazeRace(curr_coord, nodes[0]);
+    struct point* tail = malloc(sizeof(struct point));
+    tail->x = nodes[0]->x;
+    tail->y = nodes[0]->y;
+    struct point* start = tail;
+    build_path(tail, nodes[0]);
+    while(tail->next){
+        set_point(tail->x, tail->y);
+        tail = tail->next;
+    }
+    spin(curr_coord, to_rad(180));
+    maze_race(curr_coord, start);
     return 0;
 }
