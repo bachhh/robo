@@ -4,10 +4,9 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <math.h> 
-#include "picomms.h"       // Compile with -lm flag.
+#include <math.h>
+#include "picomms.h"       
 #include "movelib.h"
-#include "maplib.h"
 #include "queue.h"
 
 /*
@@ -199,7 +198,7 @@ void map(double curr_coord[2], struct node* currentnode){
 }
 
 void breadthFirstSearch(struct node* startnode){
-    struct queue* queue = malloc(sizeof(struct queue));
+    struct queue* queue = makeQueue();
     Enqueue(queue, startnode);
     startnode->discovered = 1;
     while (QueueIsEmpty(queue) != 1){
@@ -217,13 +216,27 @@ void breadthFirstSearch(struct node* startnode){
     }
 }
 
+void reversePath(struct node* node){
+    if (node->name == 16 )  
+        node->child = NULL;
+    if (node->name == 0 )   
+        node->parent = NULL;
+    while(node->parent){
+        printf("node: %d \n",node->name);
+        node->parent->child = node;
+        node = node->parent;
+    }
+    printf("Done reversePath");
+}
+
 void printPath(struct node* node){
-    if (node->name == 0){
+    printf("[ ");
+    if (node->name == 16){
         printf(" %d ] END ! \n", node->name);
     }
     else{
-        printf("%d ->", node->name);
-        printPath(node->parent);
+        printf(" %d ->", node->name);
+        printPath(node->child);
     }
 }
 
@@ -245,6 +258,7 @@ int main(){
     double curr_coord[2] = {0, 0};
     map(curr_coord, nodes[0]);
     breadthFirstSearch(nodes[0]);
-
+    reversePath(nodes[16]);
+    printPath(nodes[0]);
     return 0;
 }

@@ -12,6 +12,7 @@
 #define R_WHEEL 4.7548
 // cm, vary on individual robot     
 double width = 22.5;
+double face_angle;
 
 int prevenc[2] = {0, 0};
 
@@ -88,7 +89,9 @@ void spin(double curr_coord[2], double angle){
         return;
     printf("Start Spinning: from %f, with :%f\n",to_degree(face_angle), to_degree(angle));
     double initial_angle = face_angle;
-    int speed = 10;
+    int speed = 15
+
+    ;
     int tempspeed = 0;
     double angle_turned = 0; 
     double abs_angle = fabs(angle);
@@ -125,12 +128,12 @@ void spin(double curr_coord[2], double angle){
 
 
 void go_straight(double curr_coord[2], double distance){
-    int speed = 30;
+    int speed = 40;
     int tempspeed = 0;
     double distance_traveled = 0;
 
     while (distance_traveled < distance){
-        if (distance_traveled > 0.90*distance){
+        if (distance_traveled > 0.96*distance){
             tempspeed = (tempspeed < 2) ? 1 : speed * (1 - distance_traveled/distance);
         }
         else {
@@ -139,13 +142,10 @@ void go_straight(double curr_coord[2], double distance){
         set_motors(tempspeed, tempspeed);
 
         distance_traveled +=position_tracker(curr_coord);
-        set_point(curr_coord[0], curr_coord[1]);
-        //printf("Monitoring: angle: %f  X: %f , Y: %f \n", to_degree(face_angle), curr_coord[0], curr_coord[1] );
     }
     position_tracker(curr_coord);
     set_motors(0, 0);
     usleep(200);
-    
 }
 
 void move_to(double curr_coord[2], double x, double y){
@@ -160,7 +160,7 @@ void move_to(double curr_coord[2], double x, double y){
     spin(curr_coord, dangle);
     go_straight(curr_coord, fabs(sqrt(dx*dx + dy*dy)));
     printf("Moving Done : X = %f, Y = %f, face_angle = %f \n", curr_coord[0], curr_coord[1], to_degree(face_angle));
-    sleep(0.6);
+    sleep(0.3);
 }
 
 

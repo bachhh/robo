@@ -1,6 +1,6 @@
 #define R_WHEEL 4.7548
 
-extern double face_angle = 0;
+extern double face_angle;
 
 // function prototypes for movelib.c
 
