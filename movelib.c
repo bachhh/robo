@@ -165,6 +165,8 @@ void move_to(double curr_coord[2], double x, double y){
 
 
 
+// Taking average of multiple readings is more reliable
+
 int no_wall_left(){
     int i = 0;
     double wall = 0;
@@ -188,7 +190,6 @@ int no_wall_right(){
 int no_wall_front(){
     int i = 0;
     double wall = 0;
-    // Taking average of multiple readings is more reliable
     for (i = 0; i < 10; i++)
          wall += get_us_dist();
     return (wall/10 < 40 ) ? 0 : 1;

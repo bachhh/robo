@@ -141,6 +141,8 @@ void move_to_node(double curr_coord[2], struct node* node){
     printf("Moving to coord: x %f y %f \n",node->x, node->y );
     move_to(curr_coord, node->x, node->y);
     printf("Moving to node[%d] done! \n", node->name);
+
+    // Start mapping walls
     struct node* currentnode = node;
     currentnode->visited = 1;
     int currentfront = node_in_front(face_angle, currentnode);
@@ -230,13 +232,19 @@ void reversePath(struct node* node){
 }
 
 void printPath(struct node* node){
-    printf("[ ");
     if (node->name == 16){
-        printf(" %d ] END ! \n", node->name);
+        printf(" %d END ! \n", node->name);
     }
     else{
         printf(" %d ->", node->name);
         printPath(node->child);
+    }
+}
+
+void mazeRace(double curr_coord[2], struct node* node){
+    while(node->child){
+        move_to(curr_coord, node->child->x, node->child->y);
+        node = node->child;
     }
 }
 
@@ -260,5 +268,6 @@ int main(){
     breadthFirstSearch(nodes[0]);
     reversePath(nodes[16]);
     printPath(nodes[0]);
+    mazeRace(curr_coord, nodes[0]);
     return 0;
 }
