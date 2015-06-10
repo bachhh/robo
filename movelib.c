@@ -8,15 +8,14 @@
 #include "picomms.h"
 #include "movelib.h"
 
-
+// ### Physical parameters.
 #define R_WHEEL 4.9548 // cm, vary on individual robot, 4.7548 is ideal for the simulation.     
 double width = 23.7; // cm, vary on individual robot, 22.5 is ideal for the simulation.
-double face_angle;
+double face_angle; // Some function already has 3-4 parameters, I feel leaving face_angle is better.
 
 int prevenc[2] = {0, 0};
 
 // Trivial maths functions.
-
 double to_rad(double degree) {
     return degree * (M_PI/180);
 }
@@ -28,18 +27,12 @@ double to_degree(double rad){
 double angle_change(int prevenc[2]);
 
 double enc_to_dist(int enc) {
-    // Just a rough estimation based on observing the simulator
-    // Wheel diameter = 76mm
-    // 1 enc = 1 degree turn
-    // > 2*M_PI*76 per 360 enc
     // Unit is cm
-    enc = (double) enc;
-    return (enc * ((2*M_PI*R_WHEEL)/360));
+    return (( (double) enc ) * ((2*M_PI*R_WHEEL)/360));
 }
 
 
 //Position tracking on servo encoder reading.
-
 double position_tracker(double curr_coord[2]) {
     //  Function update global var face_angle.
     //  Function update current coordinates.
@@ -75,6 +68,7 @@ double position_tracker(double curr_coord[2]) {
 
     return sqrt(dx*dx + dy*dy);
 }
+
 /*
     Basic moves functions, basically turning fix angle and going fix distance straight.
 
@@ -160,7 +154,7 @@ void move_to(double curr_coord[2], double x, double y){
     printf("Moving Done : X = %f, Y = %f, face_angle = %f \n", curr_coord[0], curr_coord[1], to_degree(face_angle));
 }
 
-
+// ### Experimental racing function
 double race_to(double curr_coord[2], double x, double y){
     double steering = 1.8;                 // Ratio between the speed of each wheels.
     double error_margin_angle = 3;      // Degrees
@@ -220,8 +214,6 @@ int no_wall_front(){
          wall += get_us_dist();
     return (wall/25 < 40 ) ? 0 : 1;
 }
-
-
 
 int parallel(double *curr_coord){
     int i = 0;

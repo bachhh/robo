@@ -23,24 +23,7 @@ ____________
 ###                                          ###
 
 
-
-    Integrate the mapping from the midterm task into the mapping of the maze.
-    Particulary, mapping will  be integrated into:
-            move_to_node()
-            move_to()  
-
-    Because each time you carry out some movement you have to log your mapping
-            
-    With more insight:  move_to_node() will take an other pointer to the robot currently X Y coordinates and 
-                        log them into it's node's x and y
-            Which in turn, the map() function will also take a pointer to X Y coordinates and pass down to move_to_node()
-                        because move_to_node() is called by map()
-
-    Maybe the variable "angle" can be regarded as a global variable for convenience. 
-    I found myself add int* angle as a parameter to too many functions.
-
-    Otherwise, try to use pointer as much as possible instead of globals
-                                                                                                        
+    Basic                                                                                                    
 
 
 */
@@ -48,6 +31,8 @@ ____________
 
 struct node* nodes[17];
 
+
+// Make sure that all values in struct node is initialized to some default values.
 void initialize_maze(){
     int i;
     for (i= 0; i < 17; ++i)
@@ -90,6 +75,7 @@ int available_adjacent(struct node* node){
             Your FRONT adjacent node is 3
     The following codes provides a set of functions for solving this problem.
 */
+
 int node_in_front(double angle, struct node* currentnode){
     // Caculate the index of node in the "nodes[]" array, based on it's face_angle
     angle = to_degree(angle);
@@ -134,6 +120,8 @@ int node_on_right(double angle, struct node* currentnode){
     else return 17;
 }
 
+
+// Move to coordinate of a node, and checking walls, assigning the values in adjacent arrays
 void move_to_node(double curr_coord[2], struct node* node){
     printf("\t \t ### Moving to node: %d  ###\n",node->name );
     printf("Moving to coord: x %f y %f \n",node->x, node->y );
@@ -190,7 +178,7 @@ void return_to_node(double curr_coord[2], struct node* returnnode){
     }
     usleep(1000);
 }
-
+// recursively visit the adjacent nodes before the currentnode. and then return to the currentnode.
 void map(double curr_coord[2], struct node* currentnode){
     int i;
     move_to_node(curr_coord, currentnode);
@@ -204,6 +192,7 @@ void map(double curr_coord[2], struct node* currentnode){
 
 }
 
+// Build a linked list of nodes that forms the shortest path
 void breadthFirstSearch(struct node* startnode){
     struct queue* queue = makeQueue();
     Enqueue(queue, startnode);
@@ -216,13 +205,14 @@ void breadthFirstSearch(struct node* startnode){
         for (i = 0; i < 4; i++){
             if (tempnode->adjacent[i] != 0 && tempnode->adjacent[i]->discovered != 1){
                 Enqueue(queue, tempnode->adjacent[i]);
-                tempnode->adjacent[i]->parent = tempnode;
+                tempnode->adjacent[i]->parent = tempnode; // Linked list is reversed !
                 tempnode->adjacent[i]->discovered = 1;
             }
         }
     }
 }
 
+// Correccting the linked list of squares
 void reversePath(struct node* node){
     if (node->name == 16 )  
         node->child = NULL;
@@ -245,7 +235,8 @@ void printPath(struct node* node){
         printPath(node->child);
     }
 }
-// Safe verision of traversing
+//  Safe verision of traversing, using the same maneuver as when mapping ( straight go, spin fix angle)
+//  Follows the linked list  created in breadthFirstSearch
 void mazeRace(double curr_coord[2], struct node* node){
     while(node->child){
         move_to(curr_coord, node->child->x, node->child->y);
@@ -253,6 +244,8 @@ void mazeRace(double curr_coord[2], struct node* node){
     }
 }
 
+
+// Connects coordinates of 2 squares by a linked list of small points
 struct point* connect_node(struct point* tail,struct node* from, struct node* to){
     int degree_of_spacing = 5;       // Divides 2 nodes into 'degree'- number  of small sections
     int sumx = to->x - from->x;
@@ -269,7 +262,7 @@ struct point* connect_node(struct point* tail,struct node* from, struct node* to
     }
     return tail;
 }   
-
+// Connects every 2 nodes in the shortest path.
 void build_path(struct point* tail, struct node* startnode){
     while(startnode->child){
         struct point* temp = connect_node(tail, startnode, startnode->child);
@@ -279,7 +272,7 @@ void build_path(struct point* tail, struct node* startnode){
     tail->next = NULL; 
 }
 
-// Fast race versionS
+// Experimental race versions
 void maze_race(double curr_coord[2], struct point* startpoint){
     double dx = startpoint->next->x - startpoint->x;
     double dy = startpoint->next->y - startpoint->y;
