@@ -88,12 +88,10 @@ int available_adjacent(struct node* node){
             Your LEFT adjacent node is 8
             Your RIGHT adjacent node is 6
             Your FRONT adjacent node is 3
-    The following provides a set of functions solves those problems.
+    The following codes provides a set of functions for solving this problem.
 */
-
-
 int node_in_front(double angle, struct node* currentnode){
-    // Caculate the index of front node in nodes[17] array, based on the angle it's facing
+    // Caculate the index of node in the "nodes[]" array, based on it's face_angle
     angle = to_degree(angle);
     if (currentnode->name == 0)
         return 1;
@@ -105,7 +103,7 @@ int node_in_front(double angle, struct node* currentnode){
         return currentnode->name - 1;
     else if (angle < -150 || angle > 150) 
         return currentnode->name - 4;
-    else return 17;
+    else return 17; // Basically a "ghost" node as default value, preventing segmentation fault.
 }
 
 int node_on_left(double angle, struct node* currentnode){
@@ -137,10 +135,10 @@ int node_on_right(double angle, struct node* currentnode){
 }
 
 void move_to_node(double curr_coord[2], struct node* node){
-    printf("Moving to node: %d \n",node->name );
+    printf("\t \t ### Moving to node: %d  ###\n",node->name );
     printf("Moving to coord: x %f y %f \n",node->x, node->y );
     move_to(curr_coord, node->x, node->y);
-    printf("Moving to node[%d] done! \n", node->name);
+    printf(" Arrived at node[%d] ! \n", node->name);
 
     // Start mapping walls
     struct node* currentnode = node;
@@ -182,7 +180,7 @@ void move_to_node(double curr_coord[2], struct node* node){
 
 }
 void return_to_node(double curr_coord[2], struct node* returnnode){
-    printf("Returning to node[%d]\n", returnnode->name);
+    printf("\t \t ### Returning to node[%d] ###\n", returnnode->name);
     move_to(curr_coord, returnnode->x, returnnode->y);
 }
 
@@ -240,7 +238,7 @@ void printPath(struct node* node){
         printPath(node->child);
     }
 }
-
+// Safe verision of traversing
 void mazeRace(double curr_coord[2], struct node* node){
     while(node->child){
         move_to(curr_coord, node->child->x, node->child->y);
@@ -249,7 +247,7 @@ void mazeRace(double curr_coord[2], struct node* node){
 }
 
 struct point* connect_node(struct point* tail,struct node* from, struct node* to){
-    int degree_of_spacing = 5;           // Connect by using degree-number of points
+    int degree_of_spacing = 5;       // Divides 2 nodes into 'degree'- number  of small sections
     int sumx = to->x - from->x;
     int sumy = to->y - from->y;
     int marginx = sumx/degree_of_spacing;
@@ -274,6 +272,7 @@ void build_path(struct point* tail, struct node* startnode){
     tail->next = NULL; 
 }
 
+// Fast race versionS
 void maze_race(double curr_coord[2], struct point* startpoint){
     double dx = startpoint->next->x - startpoint->x;
     double dy = startpoint->next->y - startpoint->y;
@@ -291,6 +290,7 @@ void maze_race(double curr_coord[2], struct point* startpoint){
         distance = race_to(curr_coord, startpoint->x, startpoint->y);
     }
     set_motors(0,0);
+    printf(" ### FINISHED ### \n");
 }
 
 int main(){

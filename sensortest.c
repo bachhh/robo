@@ -13,6 +13,8 @@ int main(){
 	connect_to_robot();
     initialize_robot();
 	set_origin();
+	set_ir_angle(LEFT, -45);
+    set_ir_angle(RIGHT, 45);
     double curr_coord[2] = {0, 0};
     int frontl, frontr, leftir, rightir, us;
     while (1){

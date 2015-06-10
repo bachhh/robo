@@ -199,29 +199,29 @@ double race_to(double curr_coord[2], double x, double y){
 int no_wall_left(){
     int i = 0;
     double wall = 0;
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < 100; i++)
     {
         wall += get_front_ir_dist(LEFT);
     }
-    return (wall/10 < 35) ? 0 : 1;
+    return (wall/100 < 35) ? 0 : 1;
 }
 
 int no_wall_right(){
     int i = 0;
     double wall = 0;
-    for ( i = 0; i < 10; i++)
+    for ( i = 0; i < 100; i++)
     {
         wall += get_front_ir_dist(RIGHT);
     }
-    return (wall/10 < 35) ? 0 : 1;
+    return (wall/100 < 35) ? 0 : 1;
 }
 
 int no_wall_front(){
     int i = 0;
     double wall = 0;
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < 100; i++)
          wall += get_us_dist();
-    return (wall/10 < 40 ) ? 0 : 1;
+    return (wall/100 < 40 ) ? 0 : 1;
 }
 
 void centering(){
