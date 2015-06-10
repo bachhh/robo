@@ -158,6 +158,9 @@ void move_to_node(double curr_coord[2], struct node* node){
         }
         printf("There is no wall front , US dist:  %d \n", get_us_dist());
     }
+    else if(no_wall_front() == 0){
+        parallel(curr_coord);
+    }
     if (no_wall_left() == 1){
         if (nodes[currentleft]->visited == 0){
             currentnode->adjacent[i] = nodes[currentleft];
@@ -182,6 +185,10 @@ void move_to_node(double curr_coord[2], struct node* node){
 void return_to_node(double curr_coord[2], struct node* returnnode){
     printf("\t \t ### Returning to node[%d] ###\n", returnnode->name);
     move_to(curr_coord, returnnode->x, returnnode->y);
+    if(no_wall_front() == 0){
+        parallel(curr_coord);
+    }
+    usleep(1000);
 }
 
 void map(double curr_coord[2], struct node* currentnode){
@@ -297,8 +304,6 @@ int main(){
 
     connect_to_robot();
     initialize_robot();
-    set_motors(-20, -20);
-    sleep(1.5);
     set_origin();
     set_ir_angle(LEFT, -45);
     set_ir_angle(RIGHT, 45);
@@ -328,11 +333,13 @@ int main(){
     }
     tail->next = NULL; // Final node point to null.
     printf("tail: X = %f Y = %f \n", tail->x, tail->y);
+    parallel(curr_coord);
     spin(curr_coord, to_rad(180));
+    
     sleep(2);
     set_ir_angle(LEFT, 45);
     set_ir_angle(RIGHT, -45);
 
-    maze_race(curr_coord, startpoint);
+    mazeRace(curr_coord, nodes[0]);
     return 0;
 }

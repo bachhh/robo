@@ -4,10 +4,8 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <math.h>
 #include "picomms.h"       
-#include "movelib.h"
-#include "queue.h"
+
 
 int main(){
 	connect_to_robot();

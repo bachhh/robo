@@ -1,4 +1,4 @@
-#define R_WHEEL 4.7548
+
 
 extern double face_angle;
 
@@ -15,4 +15,5 @@ double race_to(double curr_coord[2], double x, double y);
 int no_wall_left();
 int no_wall_right();
 int no_wall_front();
+int parallel(double *curr_coord);
 void centering();

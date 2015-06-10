@@ -8,10 +8,9 @@
 #include "picomms.h"
 #include "movelib.h"
 
-// cm, vary on individual robot
-#define R_WHEEL 4.7548
-// cm, vary on individual robot     
-double width = 22.5;
+
+#define R_WHEEL 4.9548 // cm, vary on individual robot, 4.7548 is ideal for the simulation.     
+double width = 23.7; // cm, vary on individual robot, 22.5 is ideal for the simulation.
 double face_angle;
 
 int prevenc[2] = {0, 0};
@@ -89,9 +88,7 @@ void spin(double curr_coord[2], double angle){
         return;
     printf("Start Spinning: from %f, with :%f\n",to_degree(face_angle), to_degree(angle));
     double initial_angle = face_angle;
-    int speed = 15
-
-    ;
+    int speed = 15;
     int tempspeed = 0;
     double angle_turned = 0; 
     double abs_angle = fabs(angle);
@@ -124,16 +121,17 @@ void spin(double curr_coord[2], double angle){
     position_tracker(curr_coord);
     set_motors(0, 0);
     printf("(Spinning done ! %f \n", to_degree(face_angle) );
+    usleep(10000);
 }
 
 
 void go_straight(double curr_coord[2], double distance){
-    int speed = 40;
+    int speed = 30;
     int tempspeed = 0;
     double distance_traveled = 0;
 
     while (distance_traveled < distance){
-        if (distance_traveled > 0.93*distance){
+        if (distance_traveled > 0.90*distance){
             tempspeed = (tempspeed < 2) ? 1 : speed * (1 - distance_traveled/distance);
         }
         else {
@@ -145,7 +143,7 @@ void go_straight(double curr_coord[2], double distance){
     }
     position_tracker(curr_coord);
     set_motors(0, 0);
-    usleep(200);
+    usleep(50000);
 }
 
 void move_to(double curr_coord[2], double x, double y){
@@ -160,7 +158,6 @@ void move_to(double curr_coord[2], double x, double y){
     spin(curr_coord, dangle);
     go_straight(curr_coord, fabs(sqrt(dx*dx + dy*dy)));
     printf("Moving Done : X = %f, Y = %f, face_angle = %f \n", curr_coord[0], curr_coord[1], to_degree(face_angle));
-    sleep(0.3);
 }
 
 
@@ -199,31 +196,84 @@ double race_to(double curr_coord[2], double x, double y){
 int no_wall_left(){
     int i = 0;
     double wall = 0;
-    for (i = 0; i < 100; i++)
+    for (i = 0; i < 25; i++)
     {
         wall += get_front_ir_dist(LEFT);
     }
-    return (wall/100 < 35) ? 0 : 1;
+    return (wall/25 < 35) ? 0 : 1;
 }
 
 int no_wall_right(){
     int i = 0;
     double wall = 0;
-    for ( i = 0; i < 100; i++)
+    for ( i = 0; i < 25; i++)
     {
         wall += get_front_ir_dist(RIGHT);
     }
-    return (wall/100 < 35) ? 0 : 1;
+    return (wall/25 < 35) ? 0 : 1;
 }
 
 int no_wall_front(){
     int i = 0;
     double wall = 0;
-    for (i = 0; i < 100; i++)
+    for (i = 0; i < 25; i++)
          wall += get_us_dist();
-    return (wall/100 < 40 ) ? 0 : 1;
+    return (wall/25 < 40 ) ? 0 : 1;
 }
 
+
+
+int parallel(double *curr_coord){
+    int i = 0;
+    double leftir;
+    double rightir;
+    int parallel = 0;
+    double error = 0.04 ;
+    double time = 30.0;
+    set_ir_angle(LEFT, 45);
+    set_ir_angle(RIGHT, -45);
+    while (!parallel){
+        for ( i = 0; i < time; i++)
+        {
+            leftir += get_front_ir_dist(LEFT);
+            rightir+= get_front_ir_dist(RIGHT);
+        }
+        leftir = leftir/time;
+        rightir = rightir/time;
+        if(leftir/time > rightir/time + error){
+            set_motors(1, -1);
+            position_tracker(curr_coord);
+            for ( i = 0; i < time; i++){
+                leftir += get_front_ir_dist(LEFT);
+                rightir += get_front_ir_dist(RIGHT);
+            }
+            leftir = leftir/time;
+            rightir = rightir/time;
+        }   
+        else if(rightir/time > leftir/time + error){
+            set_motors(-1, 1);
+            position_tracker(curr_coord);
+            for (i = 0; i < time; i++){
+                leftir += get_front_ir_dist(LEFT);
+                rightir += get_front_ir_dist(RIGHT);
+            }
+            leftir = leftir/time;
+            rightir = rightir/time;
+        }   
+        else{
+            parallel = 1;
+            set_motors(0, 0);
+        }
+        printf(" ### Paralleling LEFTIR %f, RIGHTIR %f \n", leftir/time, rightir/time);
+        usleep(300000);
+        set_motors(0, 0);
+        position_tracker(curr_coord);
+
+    }
+    set_ir_angle(LEFT, -45);
+    set_ir_angle(RIGHT, 45);
+    usleep(20000);
+}
 void centering(){
     set_motors(-14, -14);
     sleep(3);
